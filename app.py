@@ -36,7 +36,7 @@ machine = TocMachine(
         },
         {
             "trigger": "go_back",
-            "source": ["state1", "state2", "state3"],
+            "source": ["user", "state1", "state3"],
             "dest": "user"
         },
     ],
@@ -61,6 +61,7 @@ if channel_access_token is None:
 
 line_bot_api = LineBotApi(channel_access_token)
 parser = WebhookParser(channel_secret)
+
 
 # 監聽所有來自 /callback 的 Post Request
 @app.route("/callback", methods=["POST"])  
