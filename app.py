@@ -14,7 +14,11 @@ from utils import send_text_message
 load_dotenv()
 
 machine = TocMachine(
-    states=["user", "state1", "state2", "state3"],
+    states=["user", "state1", 
+            "state2", "state3",
+            "state4", "state5",
+            "state6", "state7"
+            ],
     transitions=[
         {
             "trigger": "advance",
@@ -35,8 +39,35 @@ machine = TocMachine(
             "conditions": "is_going_to_state3",
         },
         {
+            "trigger": "advance",
+            "source": "state2",
+            "dest": "state4",
+            "conditions": "is_going_to_state4",
+        },
+        {
+            "trigger": "advance",
+            "source": "state2",
+            "dest": "state5",
+            "conditions": "is_going_to_state5",
+        },
+        {
+            "trigger": "advance",
+            "source": "state1",
+            "dest": "state6",
+            "conditions": "is_going_to_state6",
+        },
+        {
+            "trigger": "advance",
+            "source": "state1",
+            "dest": "state7",
+            "conditions": "is_going_to_state7",
+        },
+        {
             "trigger": "go_back",
-            "source": ["user", "state1", "state3"],
+            "source": ["state1", "state2", 
+                        "state3", "state4",
+                        "state5", "state6",
+                        "state6", "state7"],
             "dest": "user"
         },
     ],
@@ -61,7 +92,6 @@ if channel_access_token is None:
 
 line_bot_api = LineBotApi(channel_access_token)
 parser = WebhookParser(channel_secret)
-
 
 # 監聽所有來自 /callback 的 Post Request
 @app.route("/callback", methods=["POST"])  
