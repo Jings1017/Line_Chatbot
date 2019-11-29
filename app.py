@@ -1,25 +1,31 @@
 import os
 import sys
 
-
 from flask import Flask, jsonify, request, abort, send_file
 from dotenv import load_dotenv
 from linebot import LineBotApi, WebhookParser
 from linebot.exceptions import InvalidSignatureError
-from linebot.models import MessageEvent, TextMessage, TextSendMessage
+from linebot.models import MessageEvent, TextMessage, StickerMessage, ImageMessage, TextSendMessage, StickerSendMessage ,ImageSendMessage
 
 from fsm import TocMachine
-from utils import send_text_message
+from utils import send_text_message 
 
 load_dotenv()
 
 machine = TocMachine(
-    states=["user", "state1", 
+    states=["user", "state9", "state1", 
             "state2", "state3",
             "state4", "state5",
-            "state6", "state7"
+            "state6", "state7",
+            "state8"
             ],
     transitions=[
+        {
+            "trigger": "advance",
+            "source": "user",
+            "dest": "state9",
+            "conditions": "is_going_to_state9",
+        },
         {
             "trigger": "advance",
             "source": "user",
@@ -63,11 +69,18 @@ machine = TocMachine(
             "conditions": "is_going_to_state7",
         },
         {
+            "trigger": "advance",
+            "source": "state9",
+            "dest": "state8",
+            "conditions": "is_going_to_state8",
+        },
+        {
             "trigger": "go_back",
-            "source": ["state1", "state2", 
+            "source": ["state9", "state1", "state2", 
                         "state3", "state4",
                         "state5", "state6",
-                        "state6", "state7"],
+                        "state7", "state8"
+                         ],
             "dest": "user"
         },
     ],
@@ -113,7 +126,7 @@ def callback():
             continue
         if not isinstance(event.message, TextMessage):
             continue
-
+        #if isinstance(event.message, TextMessage):
         line_bot_api.reply_message(
             event.reply_token, TextSendMessage(text=event.message.text)
         )
@@ -155,7 +168,6 @@ def webhook_handler():
 def show_fsm():
     machine.get_graph().draw("fsm.png", prog="dot", format="png")
     return send_file("fsm.png", mimetype="image/png")
-
 
 if __name__ == "__main__":
     #port = os.environ.get("PORT", 5000)

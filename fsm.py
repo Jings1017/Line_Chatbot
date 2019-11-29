@@ -1,7 +1,10 @@
 from transitions.extensions import GraphMachine
-
-from utils import send_text_message
+from utils import *
+from pool import *
 import random
+#from bs4 import BeautifulSoup
+import requests
+target_url='https://movies.yahoo.com.tw/'
 
 class TocMachine(GraphMachine):
     def __init__(self, **machine_configs):
@@ -60,6 +63,19 @@ class TocMachine(GraphMachine):
             return text.lower() == "tea"
         else:
             return False
+    def is_going_to_state8(self, event):
+        if event.message.text:
+            text = event.message.text
+            print("state8 text: "+text.lower())
+            return text.lower() == "movie"
+        else:
+            return False
+    def is_going_to_state9(self,event):
+        if event.message.text:
+            text = event.message.text
+            return text.lower() == "start"
+        else:
+            return False
 
 ######### reply section #########
 ######
@@ -86,7 +102,7 @@ class TocMachine(GraphMachine):
         reply_token = event.reply_token
         bf = ['omelet','toast','croissant','pancake','bagel','sandwish']
         ran = random.randint(0,5)
-        send_text_message(reply_token, bf[ran])
+        send_text_message(reply_token, bf[ran]+'\nplease choose food or drink\nif you want to exit\nplease ignore me')
         self.go_back()
 
     def on_exit_state3(self):
@@ -97,7 +113,7 @@ class TocMachine(GraphMachine):
         reply_token = event.reply_token
         lun = ['steak','pizza','oyakodon','sushi','spaghtti','fried rice']
         ran = random.randint(0,5)
-        send_text_message(reply_token, lun[ran])
+        send_text_message(reply_token, lun[ran]+'\nplease choose food or drink\nif you want to exit\nplease ignore me')
         self.go_back()
 
     def on_exit_state4(self):
@@ -108,7 +124,7 @@ class TocMachine(GraphMachine):
         reply_token = event.reply_token
         din = ['7-11','McDonald','fried chicken','lasagna','beef noodle']
         ran = random.randint(0,4)
-        send_text_message(reply_token, din[ran])
+        send_text_message(reply_token, din[ran]+'\nplease choose food or drink\nif you want to exit\nplease ignore me')
         self.go_back()
 
     def on_exit_state5(self):
@@ -119,7 +135,7 @@ class TocMachine(GraphMachine):
         reply_token = event.reply_token
         coff = ['espresso','Americano','latte','mocha','cappuccino']
         ran = random.randint(0,4)
-        send_text_message(reply_token, coff[ran])
+        send_text_message(reply_token, coff[ran]+'\nplease choose food or drink\nif you want to exit\nplease ignore me')
         self.go_back()
 
     def on_exit_state6(self):
@@ -130,8 +146,37 @@ class TocMachine(GraphMachine):
         reply_token = event.reply_token
         tea = ['black tea','green tea','milk tea','matcha','jasmine tea']
         ran = random.randint(0,4)
-        send_text_message(reply_token, tea[ran])
+        send_text_message(reply_token, tea[ran]+'\nplease choose food or drink\nif you want to exit\nplease ignore me')
+        #send_text_message(reply_token,StickerSendMessage(package_id=1, sticker_id=2))
         self.go_back()
 
     def on_exit_state7(self):
         print("Leaving state7")
+######
+    def on_enter_state8(self, event):
+        print("I'm entering state8")
+        reply_token = event.reply_token
+        #rs=requests.session()
+        #res=rs.get(target_url, verify=False)
+        #res.enconding='utf-8'
+        #soup=BeautifulSoup(res.text, 'html.parser')
+        #context=""
+        #for index, data in enumerate(soup.select('div.movielist_info h2 a')):
+        #    title=data.text
+        #    link=data['href']
+        #    context+='{}\n{}\n'.format(title,link)
+        
+        #send_text_message(reply_token,context)
+        self.go_back()
+
+    def on_exit_state8(self):
+        print("Leaving state8")
+######
+    def on_enter_state9(self, event):
+        reply_token = event.reply_token
+        send_template_message(reply_token,get_center_msg())
+        self.go_back()
+
+    def on_exit_state9(self):
+        print("Leaving state9")
+        
