@@ -73,7 +73,31 @@ class TocMachine(GraphMachine):
     def is_going_to_state9(self,event):
         if event.message.text:
             text = event.message.text
-            return text.lower() == "start"
+            return text.lower() == "fun"
+        else:
+            return False
+    def is_going_to_state10(self,event):
+        if event.message.text:
+            text = event.message.text
+            return text.lower() == "location"
+        else:
+            return False
+    def is_going_to_state11(self,event):
+        if event.message.text:
+            text = event.message.text
+            return text.lower() == "ncku csie"
+        else:
+            return False
+    def is_going_to_state12(self,event):
+        if event.message.text:
+            text = event.message.text
+            return text.lower() == "tainan station"
+        else:
+            return False
+    def is_going_to_state13(self,event):
+        if event.message.text:
+            text = event.message.text
+            return text.lower() == "you are so cute"
         else:
             return False
 
@@ -174,9 +198,45 @@ class TocMachine(GraphMachine):
 ######
     def on_enter_state9(self, event):
         reply_token = event.reply_token
-        send_template_message(reply_token,get_center_msg())
+        send_template_message(reply_token,get_fun_msg())
         self.go_back()
 
     def on_exit_state9(self):
         print("Leaving state9")
-        
+######
+    def on_enter_state10(self, event):
+        reply_token = event.reply_token
+        send_text_message(reply_token, "where do you wanna go ?\nncku csie or tainan station")
+        #self.go_back()
+
+    #def on_exit_state10(self):
+        #print("Leaving state10")
+######
+    def on_enter_state11(self, event):
+        reply_token = event.reply_token
+        text = "May I help you ?\nfood/drink/fun/location"
+        send_template_message(reply_token,
+                                LocationSendMessage(title='NKCU CSIE', address='Tainan', latitude=22.997324, longitude=120.221172))
+        self.go_back()
+
+    def on_exit_state11(self):
+        print("Leaving state11")
+######
+    def on_enter_state12(self, event):
+        reply_token = event.reply_token
+        text = "May I help you ?\nfood/drink/fun/location"
+        send_location_message(reply_token,
+                                LocationSendMessage(title='Tainan Station', address='Tainan', latitude=22.997234, longitude=120.212528) )
+        self.go_back()
+
+    def on_exit_state12(self):
+        print("Leaving state12")
+######
+    def on_enter_state13(self, event):
+        reply_token = event.reply_token
+        ran = random.randint(0,11)
+        send_template_message(event.reply_token,StickerSendMessage(package_id=1, sticker_id=ran))
+        self.go_back()
+
+    def on_exit_state13(self):
+        print("Leaving state13")

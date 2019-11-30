@@ -13,19 +13,15 @@ from utils import send_text_message
 load_dotenv()
 
 machine = TocMachine(
-    states=["user", "state9", "state1", 
+    states=["user",  "state1", 
             "state2", "state3",
             "state4", "state5",
             "state6", "state7",
-            "state8"
+            "state8", "state9",
+            "state10", "state11",
+            "state12", "state13"
             ],
     transitions=[
-        {
-            "trigger": "advance",
-            "source": "user",
-            "dest": "state9",
-            "conditions": "is_going_to_state9",
-        },
         {
             "trigger": "advance",
             "source": "user",
@@ -70,17 +66,49 @@ machine = TocMachine(
         },
         {
             "trigger": "advance",
-            "source": "state9",
+            "source": "user",
             "dest": "state8",
             "conditions": "is_going_to_state8",
         },
         {
+            "trigger": "advance",
+            "source": "user",
+            "dest": "state9",
+            "conditions": "is_going_to_state9",
+        },
+        {
+            "trigger": "advance",
+            "source": "user",
+            "dest": "state10",
+            "conditions": "is_going_to_state10",
+        },
+        {
+            "trigger": "advance",
+            "source": "state10",
+            "dest": "state11",
+            "conditions": "is_going_to_state11",
+        },
+        {
+            "trigger": "advance",
+            "source": "state10",
+            "dest": "state12",
+            "conditions": "is_going_to_state12",
+        },
+        {
+            "trigger": "advance",
+            "source": "user",
+            "dest": "state13",
+            "conditions": "is_going_to_state13",
+        },
+        {
             "trigger": "go_back",
-            "source": ["state9", "state1", "state2", 
+            "source": [ "state1", "state2", 
                         "state3", "state4",
                         "state5", "state6",
-                        "state7", "state8"
-                         ],
+                        "state7", "state8",
+                        "state9", "state10",
+                        "state11", "state12",
+                        "state13" ],
             "dest": "user"
         },
     ],
@@ -122,14 +150,18 @@ def callback():
 
     # if event is MessageEvent and message is TextMessage, then echo text
     for event in events:
-        if not isinstance(event, MessageEvent):
-            continue
-        if not isinstance(event.message, TextMessage):
-            continue
-        #if isinstance(event.message, TextMessage):
-        line_bot_api.reply_message(
-            event.reply_token, TextSendMessage(text=event.message.text)
-        )
+        #if not isinstance(event, MessageEvent):
+        #    continue
+        #if not isinstance(event.message, TextMessage):
+        #    continue
+        if isinstance(event.message, TextMessage):
+            line_bot_api.reply_message(
+                event.reply_token, TextSendMessage(text=event.message.text)
+            )
+        #elif isinstance(event.message, StickerMessage):
+        #    line_bot_api.reply_message(
+        #        event.reply_token, StickerSendMessage(package_id=1,sticker_id=1)
+        #    )
 
     return "OK"
 
@@ -149,12 +181,12 @@ def webhook_handler():
 
     # if event is MessageEvent and message is TextMessage, then echo text
     for event in events:
-        if not isinstance(event, MessageEvent):
-            continue
-        if not isinstance(event.message, TextMessage):
-            continue
-        if not isinstance(event.message.text, str):
-            continue
+        #if not isinstance(event, MessageEvent):
+        #    continue
+        #if not isinstance(event.message, TextMessage):
+        #    continue
+        #if not isinstance(event.message.text, str):
+        #    continue
         print(f"\nFSM STATE: {machine.state}")
         print(f"REQUEST BODY: \n{body}")
         response = machine.advance(event)
