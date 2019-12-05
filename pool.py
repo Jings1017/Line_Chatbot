@@ -18,8 +18,8 @@ def get_lobby_msg():
                     text='drink'
                 ),
                 MessageTemplateAction(
-                    label='sticker',
-                    text='sticker'
+                    label='movie',
+                    text='movie'
                 ),
                 MessageTemplateAction(
                     label='location',

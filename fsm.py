@@ -2,11 +2,10 @@ from transitions.extensions import GraphMachine
 from utils import *
 from pool import *
 import random
-#from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup
 import requests
 #from lxml import etree 
 target_url='https://movies.yahoo.com.tw/'
-
 
 class TocMachine(GraphMachine):
     def __init__(self, **machine_configs):
@@ -75,7 +74,7 @@ class TocMachine(GraphMachine):
     def is_going_to_state9(self,event):
         if event.message.text:
             text = event.message.text
-            return text == "THSR Tainan Station"
+            return text.lower() == "THSR Tainan Station"
         else:
             return False
     def is_going_to_state10(self,event):
@@ -99,7 +98,7 @@ class TocMachine(GraphMachine):
     def is_going_to_state13(self,event):
         if event.message.text:
             text = event.message.text
-            return text.lower() == "sticker"
+            return text.lower() == "yes" or text.lower()=="no"
         else:
             return False
     def is_going_to_state14(self,event):
@@ -145,7 +144,7 @@ class TocMachine(GraphMachine):
     def on_enter_state4(self, event):
         print("I'm entering state4")
         reply_token = event.reply_token
-        lun = ['steak','pizza','oyakodon','sushi','spaghtti','fried rice','chicken breasts','hamburger']
+        lun = ['steak','pizza','oyakodon','sushi','spaghtti','fried rice','chicken breasts','ramen']
         ran = random.randint(0,7)
         send_text_message(reply_token, lun[ran]+'\ntype exit to leave')
         #self.go_back()
@@ -156,7 +155,7 @@ class TocMachine(GraphMachine):
     def on_enter_state5(self, event):
         print("I'm entering state5")
         reply_token = event.reply_token
-        din = ['buffet','McDonald','fried chicken','chicken breasts','beef noodle','dumpling','hot pot','dim sum']
+        din = ['buffet','McDonald','fried chicken','KFC','beef noodle','dumpling','hot pot','dim sum']
         ran = random.randint(0,7)
         send_text_message(reply_token, din[ran]+'\ntype exit to leave')
         #self.go_back()
@@ -189,24 +188,24 @@ class TocMachine(GraphMachine):
     def on_enter_state8(self, event):
         print("I'm entering state8")
         reply_token = event.reply_token
-        #rs=requests.session()
-        #res=rs.get(target_url, verify=False)
-        #res.enconding='utf-8'
-        #soup=BeautifulSoup(res.text, 'html.parser')
-        #context=""
-        #for index, data in enumerate(soup.select('div.movielist_info h2 a')):
-        #    title=data.text
-        #    link=data['href']
-        #    context+='{}\n{}\n'.format(title,link)
-        #send_text_message(reply_token,context)
-        self.go_back()
+        rs=requests.session()
+        res=rs.get(target_url, verify=False)
+        res.enconding='utf-8'
+        soup=BeautifulSoup(res.text, 'html.parser')
+        context=""
+        for index, data in enumerate(soup.select('div.movielist_info h2 a')):
+            title=data.text
+            link=data['href']
+            context+='{}\n'.format(title)
+        context+='Do you want to go to movie with me ?\nyes or no'
+        send_text_message(reply_token,context)
+        #self.go_back()
 
-    def on_exit_state8(self):
-        print("Leaving state8")
+    #def on_exit_state8(self):
+        #print("Leaving state8")
 ######
     def on_enter_state10(self, event):
         reply_token = event.reply_token
-        #send_text_message(reply_token, "where do you wanna go ?\nncku csie or tainan station")
         send_template_message(reply_token,get_location_msg())
         #self.go_back()
 
@@ -221,24 +220,24 @@ class TocMachine(GraphMachine):
 
     def on_exit_state11(self):
         print("Leaving state11")
-######
-    def on_enter_state9(self, event):
-        reply_token = event.reply_token
-        send_template_message(reply_token,
-                                LocationSendMessage(title='THSR Tainan Station', address='Tainan', latitude=22.924807, longitude=120.285680))
-        self.go_back()
-
-    def on_exit_state11(self):
-        print("Leaving state11")
 ###### 
     def on_enter_state12(self, event):
         reply_token = event.reply_token
         send_location_message(reply_token,
-                                LocationSendMessage(title='Tainan Main Station', address='Tainan', latitude=22.997234, longitude=120.212528) )
+                                LocationSendMessage(title='Tainan Station', address='Tainan', latitude=22.997234, longitude=120.212528))
         self.go_back()
 
     def on_exit_state12(self):
         print("Leaving state12")
+###### 
+    def on_enter_state9(self, event):
+        reply_token = event.reply_token
+        send_location_message(reply_token,
+                                LocationSendMessage(title='THSR Tainan Station', address='Tainan', latitude=22.924807, longitude=120.285680))
+        self.go_back()
+
+    def on_exit_state9(self):
+        print("Leaving state9")
 ######
     def on_enter_state13(self, event):
         reply_token = event.reply_token
