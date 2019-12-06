@@ -79,11 +79,24 @@ The initial state is set to `user`.
 Every time `user` state is triggered to `advance` to another state, it will `go_back` to `user` state after the bot replies corresponding message.
 
 * user
-	* Input: "go to state1"
-		* Reply: "I'm entering state1"
+	* Input: "food"
+		* Reply: the buttons named "breakfast", "lunch", "dinner" 
 
-	* Input: "go to state2"
-		* Reply: "I'm entering state2"
+	* Input: "drink"
+		* Reply: the buttons named "coffee", "tea"
+	
+	* Input: "movie"
+		* Reply: the list of latest movie by web crawler
+		* Answer the question in reply (yes/no) , and the chatbot will show you a sticker , after then go back
+
+	* Input: "location"
+		* Reply: the buttons named "NCKU CSIE", "Tainan Station", "THSR Tainan Station"
+		* choose which location you wanna know , and then show you the location and go back
+		
+	* Input: "breakfast", "lunch", "dinner", "coffee", "tea"
+		* Reply: recommend something for you
+		* Type "exit" , if you wanna go back 
+
 
 ## Deploy
 Setting to deploy webhooks on Heroku.
