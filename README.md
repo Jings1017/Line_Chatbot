@@ -1,4 +1,4 @@
-# TOC Project 2020
+# Line Chatbot 
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/dc7fa47fcd809b99d087/maintainability)](https://codeclimate.com/github/NCKU-CCS/TOC-Project-2020/maintainability)
 
@@ -14,9 +14,9 @@ More details in the [Slides](https://hackmd.io/@TTW/ToC-2019-Project#) and [FAQ]
 ## Setup
 
 ### Prerequisite
-* Python 3.6
+* Python 3.7
 * Pipenv
-* Facebook Page and App
+* LINE API
 * HTTPS Server
 
 #### Install Dependency
@@ -86,17 +86,28 @@ Every time `user` state is triggered to `advance` to another state, it will `go_
 		* Reply: the buttons named "coffee", "tea"
 	
 	* Input: "movie"
-		* Reply: the list of latest movie by web crawler
-		* Answer the question in reply (yes/no) , and the chatbot will show you a sticker , after then go back
+		* Reply: the list of latest movie by web crawler, and give an question.
 
 	* Input: "location"
 		* Reply: the buttons named "NCKU CSIE", "Tainan Station", "THSR Tainan Station"
-		* choose which location you wanna know , and then show you the location and go back
-		
-	* Input: "breakfast", "lunch", "dinner", "coffee", "tea"
+
+* food
+	* Input: "breakfast", "lunch", "dinner"
 		* Reply: recommend something for you
 		* Type "exit" , if you wanna go back 
 
+* drink
+	* Input: "coffee", "tea"
+		* Reply: recommend something for you
+		* Type "exit" , if you wanna go back 
+
+* movie 
+	* Input: "yes", "no"
+		* Reply: a sticker in random
+		
+* location
+	* Input: "NCKU CSIE", "Tainan Station", "THSR Tainan Station"
+		* Reply: the information of the place you choose
 
 ## Deploy
 Setting to deploy webhooks on Heroku.
